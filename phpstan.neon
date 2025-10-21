@@ -1,6 +1,7 @@
 includes:
     - vendor/larastan/larastan/extension.neon
     - vendor/nesbot/carbon/extension.neon
+    - phar://phpstan.phar/conf/bleedingEdge.neon
 
 parameters:
     paths:
@@ -8,5 +9,7 @@ parameters:
         - bootstrap
         - routes
         - config
-    level: 7
+    scanDirectories:
+         - helpers
+    level: max
     tmpDir: /tmp/phpstan

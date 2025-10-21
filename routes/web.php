@@ -24,7 +24,7 @@ Route::middleware(['auth'])->group(function (): void {
             Features::canManageTwoFactorAuthentication()
                 && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
             fn ($route) => $route->middleware(['password.confirm']),
-            fn ($route) => $route
+            fn ($route): Illuminate\Routing\Route => $route
         )
         ->name('two-factor.show');
 });

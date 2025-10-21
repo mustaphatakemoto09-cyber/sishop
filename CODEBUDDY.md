@@ -46,3 +46,36 @@ High-level architecture
 Notes
 - Use composer run dev for the typical local workflow; it concurrently starts server, queue listener, Laravel logs (pail), and Vite.
 - When adding frontend assets, ensure they’re referenced by laravel-vite-plugin inputs (vite.config.js:10).
+
+Environment bootstrap and Sail
+- Initialize environment and SQLite (from composer scripts):
+  - php -r "file_exists('.env') || copy('.env.example', '.env');"
+  - php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
+- Generate app key and run initial migrations:
+  - php artisan key:generate --ansi
+  - php artisan migrate --graceful --ansi
+- Optional Dockerized dev via Laravel Sail:
+  - vendor/bin/sail up
+  - vendor/bin/sail artisan test
+
+Testing workflow details
+- composer run test clears config cache first (scripts:test): php artisan config:clear --ansi
+- Pest plugins: Browser, Laravel, Livewire; tests scoped to Browser/Feature/Unit with time/sleep fakes and stray HTTP prevented (tests/Pest.php:18-28).
+
+Linting and static analysis
+- Pint: vendor/bin/pint
+- Larastan (PHPStan for Laravel): vendor/bin/phpstan analyse --memory-limit=1G
+- Rector (code upgrades): vendor/bin/rector process
+- IDE helpers: composer run ide-helper
+
+Routing and Fortify features
+- Settings routes via Volt::route(...) under auth middleware (routes/web.php:15-21).
+- Two-factor route gating based on Laravel\Fortify\Features with optional password.confirm middleware (routes/web.php:22-29).
+
+Assets pipeline specifics
+- Vite inputs: resources/css/app.css, resources/js/app.js; Tailwind via @tailwindcss/vite; refresh enabled; CORS enabled (vite.config.js:7-18).
+- Add new entry files to laravel-vite-plugin inputs when introducing additional asset bundles.
+
+Queues and logs in dev
+- Queue listener: php artisan queue:listen --tries=1
+- Logs (pail): php artisan pail --timeout=0

@@ -20,13 +20,11 @@ Route::middleware(['auth'])->group(function (): void {
     Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');
 
     Volt::route('settings/two-factor', 'settings.two-factor')
-        ->middleware(
-            when(
-                Features::canManageTwoFactorAuthentication()
-                    && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
-                ['password.confirm'],
-                [],
-            ),
+        ->when(
+            Features::canManageTwoFactorAuthentication()
+                && Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword'),
+            fn ($route) => $route->middleware(['password.confirm']),
+            fn ($route) => $route
         )
         ->name('two-factor.show');
 });

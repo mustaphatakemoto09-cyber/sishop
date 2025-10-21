@@ -1,5 +1,4 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
     "name": "shipfastlabs/modern-livewire-starter-kit-auth",
     "type": "project",
     "description": "Laravel starter kit with opinionated modern tooling setup.",
